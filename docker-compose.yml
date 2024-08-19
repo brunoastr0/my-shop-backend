@@ -1,0 +1,57 @@
+
+services:
+  postgres:
+    image: postgres
+    container_name: postgres-docker
+    restart: always
+    environment:
+      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      PGDATA: /data/postgres
+    healthcheck:
+        test: ["CMD-SHELL","pg_isready -d ${DB_DATABASE} -U ${DB_USERNAME}"]
+        interval: 5s
+        timeout: 5s
+        retries: 5
+    ports:
+        - "5432:5432"
+
+    volumes:
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - node-network
+
+
+  nodejs:
+    image: nodejs
+    container_name: nodejs
+    build: 
+      context: .
+      dockerfile: ./dockerfiles/Dockerfile
+    
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+    ports:
+      - "3000:3000"
+    restart: unless-stopped  
+    environment:
+      - PORT=3000
+      - DATABASE_URL=postgresql://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_DATABASE}
+      - ISSUER=${AUTH0_ISSUER}
+      - AUDIENCE=${AUTH0_AUDIENCE}
+    depends_on:
+      - postgres
+    networks:
+      - node-network
+
+networks:
+  node-network:
+      driver: bridge
+
+volumes:
+    postgres-data:
+      driver: local
+    node_modules:
