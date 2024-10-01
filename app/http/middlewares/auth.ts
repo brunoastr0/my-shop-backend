@@ -1,10 +1,15 @@
-import { auth } from 'express-oauth2-jwt-bearer';
-import dotenv from 'dotenv';
+import jwt from "jsonwebtoken";
+import { Request, Response, NextFunction } from "express";
 
-dotenv.config();
+export const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
+    const authHeader = req.headers["authorization"];
+    const token = authHeader && authHeader.split(" ")[1];
 
-// Middleware to validate JWT using Auth0
-export const checkJwt = auth({
-    audience: process.env.AUTH0_AUDIENCE,
-    issuerBaseURL: process.env.AUTH0_ISSUER,
-});
+    if (!token) return res.sendStatus(401); // Unauthorized
+
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET!, (err, user) => {
+        if (err) return res.sendStatus(403); // Forbidden
+        req.user = user; // Add the user to the request object
+        next();
+    });
+};

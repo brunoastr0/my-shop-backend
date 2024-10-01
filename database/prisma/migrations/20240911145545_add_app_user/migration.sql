@@ -1,5 +1,6 @@
 -- Permissions --
--- DROP USER IF EXISTS shop_user;
+DROP USER IF EXISTS shop_user;
+
 -- CREATE ROLE app_user LOGIN PASSWORD ‘your_password’;
 CREATE ROLE shop_user LOGIN PASSWORD 'shop_password';
 

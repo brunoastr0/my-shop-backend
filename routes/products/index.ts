@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import prisma, { forTenant, bypassRLS } from '../../app/utils/prismaClient'; // Import prisma and forTenant function
-import { pgMiddleware } from '../../app/http/middlewares/tenantMiddleware'; // Adjust path as necessary
+// import { pgMiddleware } from '../../app/http/middlewares/tenantMiddleware'; // Adjust path as necessary
 import { Request } from 'express-serve-static-core';
 import { ParsedQs } from 'qs';
 

@@ -1,12 +1,13 @@
-// types/express.d.ts
-import { tenants } from '@prisma/client'; // Assuming you're using Prisma for the Tenant model
+
+import { User } from '@prisma/client'; // Adjust the import based on where your User model is defined
+import { JwtPayload } from "jsonwebtoken";
 
 declare global {
     namespace Express {
         interface Request {
-            tenants?: tenants; // Add tenant property to the Request type
+            user?: string | JwtPayload; // Extend with user property
         }
     }
 }
 
-export { }; // This is necessary to make it a module and avoid global scope issues
+
