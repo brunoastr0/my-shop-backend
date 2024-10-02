@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser"
 // import orders from "../routes/orders"
 import products from "../routes/products"
 import user from "../routes/user"
+import { extractTenantName } from "./http/middlewares/extractTenantName";
 
 // import { pgMiddleware } from "./http/middlewares/tenantMiddleware";
 const routes = require('../routes/index.ts')
@@ -24,6 +25,8 @@ app.use(express.json());
 app.use(cookieParser())
 app.use(urlencoded({ extended: true }))
 
+app.use(extractTenantName)
+
 
 app.get("/health", async (req, res) => {
   try {
@@ -37,7 +40,6 @@ app.get("/health", async (req, res) => {
 app.use('/api', routes)
 // app.use('/api', orders);
 app.use('/api', products);
-app.use('/api', user)
 
 const start = async () => {
   app.listen(process.env.PORT, () => {

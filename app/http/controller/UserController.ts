@@ -6,9 +6,9 @@ class UserController {
     async createUser(req: Request, res: Response) {
 
         const { email, password } = req.body.data;
-        const { store_name } = req.body;
+        const tenantPrisma = req.tenantPrisma;
         try {
-            const user = await userService.createUser(email, password, store_name);
+            const user = await userService.createUser(email, password, tenantPrisma);
             return res.status(201).json({ user });
         } catch (error: any) {
             return res.status(400).json({ message: error.message });
@@ -18,11 +18,10 @@ class UserController {
     // User login
     async login(req: Request, res: Response) {
         const { email, password } = req.body.data;
-        const { store_name } = req.body;
-
+        const tenantPrisma = req.tenantPrisma;
 
         try {
-            const { accessToken, refreshToken } = await userService.login(email, password, store_name);
+            const { accessToken, refreshToken } = await userService.login(email, password, tenantPrisma);
             return res.status(200).json({ accessToken, refreshToken });
         } catch (error: any) {
             return res.status(401).json({ message: error.message });

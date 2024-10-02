@@ -1,6 +1,8 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import prisma, { forTenant } from "../../utils/prismaClient";
+import { v4 as uuidv4 } from 'uuid';
+import { PrismaClient } from '@prisma/client'; // Adjust the import based on where your User model is defined
 
 // Create a Prisma Client instance
 
@@ -19,17 +21,14 @@ interface User {
 
 class UserService {
     // Create a new user
-    async createUser(email: string, password: string, store_name: string) {
+    async createUser(email: string, password: string, tenantPrisma: PrismaClient) {
         try {
 
 
-            const tenant = await prisma.tenant.findFirst({
-                where: { name: store_name },
-            });
-            if (!tenant) {
+
+            if (!tenantPrisma) {
                 throw new Error("Tenant invalid")
             }
-            const tenantPrisma = prisma.$extends(forTenant(tenant.id));
             const existingUser = await tenantPrisma.user.findUnique({
                 where: { email },
             });
@@ -38,9 +37,9 @@ class UserService {
             }
             const hashedPassword = bcrypt.hashSync(password, 10);
 
-            const createdUser = await prisma.user.create({
+            const createdUser = await tenantPrisma.user.create({
                 data: {
-                    id: "713c83fa-7015-47bc-8413-041ed2b38e33",
+                    id: uuidv4(),
                     email,
                     password: hashedPassword,
                 },
@@ -54,16 +53,11 @@ class UserService {
     }
 
     // User login
-    async login(email: string, password: string, store_name: string): Promise<{ accessToken: string; refreshToken: string; }> {
+    async login(email: string, password: string, tenantPrisma: PrismaClient): Promise<{ accessToken: string; refreshToken: string; }> {
 
-        const tenant = await prisma.tenant.findFirst({
-            where: { name: store_name },
-        });
-        if (!tenant) {
+        if (!tenantPrisma) {
             throw new Error("Tenant invalid")
         }
-        const tenantPrisma = prisma.$extends(forTenant(tenant.id));
-
 
         const user = await tenantPrisma.user.findUnique({
             where: { email },
