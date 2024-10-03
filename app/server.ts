@@ -5,7 +5,6 @@ import cors from "cors";
 import cookieParser from "cookie-parser"
 // import orders from "../routes/orders"
 import products from "../routes/products"
-import user from "../routes/user"
 import { extractTenantName } from "./http/middlewares/extractTenantName";
 
 // import { pgMiddleware } from "./http/middlewares/tenantMiddleware";

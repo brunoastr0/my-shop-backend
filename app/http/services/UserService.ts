@@ -1,7 +1,5 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import prisma, { forTenant } from "../../utils/prismaClient";
-import { v4 as uuidv4 } from 'uuid';
 import { PrismaClient } from '@prisma/client'; // Adjust the import based on where your User model is defined
 
 // Create a Prisma Client instance
@@ -23,9 +21,6 @@ class UserService {
     // Create a new user
     async createUser(email: string, password: string, tenantPrisma: PrismaClient) {
         try {
-
-
-
             if (!tenantPrisma) {
                 throw new Error("Tenant invalid")
             }
@@ -35,11 +30,12 @@ class UserService {
             if (existingUser) {
                 throw new Error("Email already in use.");
             }
-            const hashedPassword = bcrypt.hashSync(password, 10);
+            const hashedPassword = await bcrypt.hash(password, 10);
+            console.log("eere")
 
             const createdUser = await tenantPrisma.user.create({
                 data: {
-                    id: uuidv4(),
+                    id: crypto.randomUUID(),
                     email,
                     password: hashedPassword,
                 },
@@ -49,6 +45,7 @@ class UserService {
             return createdUser;
         } catch (error) {
             console.log(error)
+            throw new Error("Failed to create user")
         }
     }
 
@@ -70,26 +67,28 @@ class UserService {
         const accessToken = this.generateAccessToken(user);
         const refreshToken = this.generateRefreshToken(user);
 
-        await prisma.user.update({
+        await tenantPrisma.user.update({
             where: { id: user.id },
             data: { refreshToken },
         });
 
         return { accessToken, refreshToken };
     }
-
     // Generate access token
     private generateAccessToken(user: { id: string; email: string }) {
+        const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET! || "password"
+
         return jwt.sign(
             { id: user.id, email: user.email },
-            process.env.ACCESS_TOKEN_SECRET!,
+            accessTokenSecret,
             { expiresIn: "15m" }
         );
     }
 
     // Generate refresh token
     private generateRefreshToken(user: { id: string }) {
-        return jwt.sign({ id: user.id }, process.env.REFRESH_TOKEN_SECRET!, {
+        const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET! || "password"
+        return jwt.sign({ id: user.id }, refreshTokenSecret, {
             expiresIn: "15d",
         });
     }
