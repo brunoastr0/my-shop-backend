@@ -31,8 +31,6 @@ class UserService {
                 throw new Error("Email already in use.");
             }
             const hashedPassword = await bcrypt.hash(password, 10);
-            console.log("eere")
-
             const createdUser = await tenantPrisma.user.create({
                 data: {
                     id: crypto.randomUUID(),
