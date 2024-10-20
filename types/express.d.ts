@@ -4,8 +4,13 @@ import { JwtPayload } from "jsonwebtoken";
 
 declare global {
     namespace Express {
+        interface CustomJwtPayload extends JwtPayload {
+            id: string;
+            tenantId: string;
+            email: string;
+        }
         interface Request {
-            user?: string | JwtPayload; // Extend with user property
+            user?: string | CustomJwtPayload; // Extend with user property
             tenantPrisma: Prisma;
         }
     }

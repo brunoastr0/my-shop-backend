@@ -29,6 +29,7 @@ model User {
   active       Boolean  @default(false)
   refreshToken String?
   password     String
+  role         String   @default("tenant_admin")
   tenant       Tenant   @relation(fields: [tenant_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   tenant_id    String   @default(dbgenerated("(current_setting('app.current_tenant_id'::text))::UUID")) // Changed from Int to String for UUID
   created_at   DateTime @default(now())

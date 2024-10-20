@@ -5,6 +5,11 @@ import { userController } from '../../app/http/controller/UserController';
 const router = Router();
 
 
+
+
+
+
+
 // GET /products - Fetch products for the current tenant based on subdomain
 router.post('/register', async (req, res) => {
     try {
