@@ -28,17 +28,6 @@ class UserController {
         }
     }
 
-    async createTenant(req: Request, res: Response) {
-        try {
-            const { tenantName, adminEmail, adminPassword } = req.body
-            const { tenant } = await userService.createTenantAndAdmin(tenantName, adminEmail, adminPassword)
-
-            return res.status(201).json({ tenant })
-        } catch (error: any) {
-            return res.status(400).json({ message: error.message })
-
-        }
-    }
 
 
 }
