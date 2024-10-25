@@ -10,7 +10,7 @@ declare global {
             email: string;
         }
         interface Request {
-            user?: string | CustomJwtPayload; // Extend with user property
+            user?: string | CustomJwtPayload | any; // Extend with user property
             tenantPrisma: Prisma;
         }
     }

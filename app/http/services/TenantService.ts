@@ -8,6 +8,9 @@ class TenantService {
         this.prisma = prisma.$extends(bypassRLS()); // Use bypassRLS by default for this instance
     }
     async createTenantAndAdmin(tenantName: string, adminEmail: string, adminPassword: string) {
+
+
+
         const result = await this.prisma.$transaction(async (tx) => {
             const existingTenant = await tx.tenant.findFirst({
 
@@ -41,6 +44,7 @@ class TenantService {
         });
 
         return result;
+
     }
 
     // Method to create a super admin (without tenant restriction)

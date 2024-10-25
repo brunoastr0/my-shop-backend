@@ -1,31 +1,42 @@
 import { Request, Response, NextFunction } from "express";
 import prisma, { forTenant } from "../../utils/prismaClient";
+import { MissingTenantError, TenantNotFoundError } from "../../utils/error-handler"
 
+
+
+// // Extend Express Request interface to add tenantPrisma
+// declare module 'express-serve-static-core' {
+//     interface Request {
+//         tenantPrisma?: typeof prisma; // Add optional tenantPrisma to Request
+//     }
+// }
 
 export const tenantMiddleware = async (req: Request, res: Response, next: NextFunction) => {
-    const storeName = req.headers["x-tenant-name"] as string; // Assuming tenant name is passed in this header
+
+
+
+    const storeName = req.headers["x-tenant-name"] as string;
     if (!storeName) {
-        return res.status(400).json({ message: "Tenant name is required in headers." });
+        // Pass custom error for missing tenant name
+        return next(new MissingTenantError());
     }
 
     try {
-        // Fetch tenant details from the database
+        // Fetch tenant details
         const tenant = await prisma.tenant.findFirst({
             where: { name: storeName },
         });
+
         if (!tenant) {
-            return res.status(404).json({ message: "Tenant not found." });
+            // Pass custom error for tenant not found
+            return next(new TenantNotFoundError());
         }
 
-        // Create tenant-specific Prisma client with RLS applied
-        const tenantPrisma = prisma.$extends(forTenant(tenant.id, tenant.name));
-        // Attach tenant-specific Prisma client to the request
-        req.tenantPrisma = tenantPrisma;
+        // Apply tenant-specific RLS to Prisma instance and attach it to the request
+        req.tenantPrisma = prisma.$extends(forTenant(tenant.id, tenant.name));
 
         next();
     } catch (error) {
-        console.error("Error in tenantMiddleware:", error);
-        return res.status(500).json({ message: "Internal Server Error" });
+        next(error); // Pass any unexpected errors to the error handler
     }
 };
-

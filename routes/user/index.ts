@@ -11,7 +11,7 @@ const router = Router();
 
 
 // GET /products - Fetch products for the current tenant based on subdomain
-router.post('/register', async (req, res) => {
+router.post('/register', async (req, res, next) => {
     try {
 
         const createUser = userController.createUser.bind(userController)
@@ -23,10 +23,10 @@ router.post('/register', async (req, res) => {
 
 });
 
-router.post('/login', async (req, res) => {
+router.post('/login', async (req, res, next) => {
     try {
         const loginUser = userController.login.bind(userController)
-        loginUser(req, res)
+        loginUser(req, res, next)
 
     } catch (error) {
         console.log(error)

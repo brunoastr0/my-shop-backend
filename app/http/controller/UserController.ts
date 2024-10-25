@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { userService } from "../services/UserService"; // Adjust the import according to your file structure
 
 class UserController {
@@ -15,7 +15,7 @@ class UserController {
     }
 
     // User login
-    async login(req: Request, res: Response) {
+    async login(req: Request, res: Response, next: NextFunction) {
         const { email, password } = req.body.data;
         const tenantPrisma = req.tenantPrisma;
         // console.log(await tenantPrisma.user.findMany())
@@ -24,7 +24,8 @@ class UserController {
             const { accessToken, refreshToken } = await userService.login(email, password, tenantPrisma);
             return res.status(200).json({ accessToken, refreshToken });
         } catch (error: any) {
-            return res.status(401).json({ message: error.message });
+            next(error);
+            // return res.status(401).json({ message: error.message });
         }
     }
 

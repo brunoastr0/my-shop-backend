@@ -8,11 +8,11 @@ const router = Router();
 
 
 
-router.post('/create-tenant', async (req, res) => {
+router.post('/create-tenant', async (req, res, next) => {
     try {
 
         const createTenant = tenantController.createTenant.bind(tenantController)
-        createTenant(req, res)
+        createTenant(req, res, next)
 
     } catch (error) {
         console.log(error)

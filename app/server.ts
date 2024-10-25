@@ -25,18 +25,10 @@ app.use(urlencoded({ extended: true }))
 
 
 
-app.get("/health", async (req, res) => {
-  try {
-    await prisma.$connect(); // Ensure DB connection
-    res.send("Database connected.");
-  } catch (err) {
-    res.status(500).send("Database connection failed.");
-  }
-});
 
+//routes
 app.use('/api', routes)
-// app.use('/api', orders);
-app.use('/api', products);
+
 
 const start = async () => {
   app.listen(process.env.PORT, () => {
