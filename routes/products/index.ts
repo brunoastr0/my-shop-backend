@@ -3,18 +3,19 @@ import { productController } from '../../app/http/controller/ProductController';
 
 const router = Router();
 
+// GET /products - List all products for the current tenant
+router.get('/get-products', productController.index.bind(productController));
 
-// GET /products - Fetch products for the current tenant based on subdomain
-router.get('/products', async (req, res, next) => {
-    try {
+// POST /products - Create a new product
+router.post('/create-product', productController.create.bind(productController));
 
-        const fetchProducts = productController.index.bind(productController)
-        fetchProducts(req, res, next)
+// GET /products/:id - Retrieve a specific product by ID
+router.get('/get-product/:id', productController.show.bind(productController));
 
-    } catch (error) {
-        console.log(error)
-    }
-});
+// PUT /products/:id - Update a product by ID
+router.put('/update-product/:id', productController.update.bind(productController));
 
+// DELETE /products/:id - Delete a product by ID
+router.delete('/delete-product/:id', productController.delete.bind(productController));
 
 export default router;

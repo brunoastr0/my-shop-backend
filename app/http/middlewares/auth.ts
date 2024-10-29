@@ -13,7 +13,7 @@ export const authenticateToken = async (req: Request, res: Response, next: NextF
     const authHeader = req.headers["authorization"];
     const tenantName = req.headers["x-tenant-name"] as string;
     const token = authHeader && authHeader.split(" ")[1];
-
+    // console.log(req.url)
     if (!token) {
         return next(new AccessTokenMissing());
     }

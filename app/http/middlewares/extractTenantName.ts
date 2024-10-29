@@ -31,9 +31,9 @@ export const tenantMiddleware = async (req: Request, res: Response, next: NextFu
             // Pass custom error for tenant not found
             return next(new TenantNotFoundError());
         }
-
         // Apply tenant-specific RLS to Prisma instance and attach it to the request
         req.tenantPrisma = prisma.$extends(forTenant(tenant.id, tenant.name));
+        req.tenantId = tenant.id
 
         next();
     } catch (error) {

@@ -1,20 +1,23 @@
 
 import { PrismaClient, Product } from '@prisma/client'; // Adjust the import based on where your User model is defined
 import jwt from 'jsonwebtoken';
-import { MissingTenantError, TenantNotFoundError } from '../../utils/error-handler';
+import { MissingTenantError } from '../../utils/error-handler';
 // Create a Prisma Client instance
 
 
 class ProductService {
     // Create a new product
-    async createProduct(name: string, price: number, description: string, tenantPrisma: PrismaClient): Promise<Product> {
-        if (!tenantPrisma) throw new TenantNotFoundError();
+    async createProduct(name: string, price: number, description: string, tenantPrisma: PrismaClient, tenantId: string): Promise<Product> {
+        if (!tenantPrisma) throw new MissingTenantError();
 
         const product = await tenantPrisma.product.create({
             data: {
+                id: crypto.randomUUID(),
                 product_name: name,
                 sale_price: price,
-                product_description: description
+                product_description: description,
+                quantity: 10,
+                tenant_id: tenantId
             },
         });
 

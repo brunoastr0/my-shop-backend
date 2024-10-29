@@ -20,7 +20,7 @@ RUN npm run build
 # RUN npx prisma db pull
 # Set the environment variable for admin to apply migrations
 # This should match the env variable in your .env file
-ENV DATABASE_URL="postgresql://postgres:postgrespassword@172.24.0.1:5432/my-shop?schema=public"
+# ENV DATABASE_URL="postgresql://postgres:postgrespassword@172.24.0.1:5432/my-shop?schema=public"
 # Generate Prisma client
 RUN npx prisma generate
 

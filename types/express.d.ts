@@ -12,6 +12,7 @@ declare global {
         interface Request {
             user?: string | CustomJwtPayload | any; // Extend with user property
             tenantPrisma: Prisma;
+            tenantId: string;
         }
     }
 }
