@@ -4,10 +4,9 @@ import dotenv from "dotenv";
 import cors from "cors";
 import cookieParser from "cookie-parser"
 // import orders from "../routes/orders"
-import products from "../routes/products"
 
 // import { pgMiddleware } from "./http/middlewares/tenantMiddleware";
-const routes = require('../routes/index.ts')
+const routes = require('./http/routes/index.ts')
 dotenv.config();
 
 const app = express();

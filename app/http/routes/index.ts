@@ -1,12 +1,12 @@
 // routes/userRoutes.js
 import express, { Request, Response } from "express";
 const router = express.Router();
-import { authenticateToken } from '../app/http/middlewares/auth'
+import { authenticateToken } from '../middlewares/auth'
 import user from './user'
 import products from './products'
 import admin from './admin'
-import { tenantMiddleware } from "../app/http/middlewares/extractTenantName";
-import errorMiddleware from "../app/http/middlewares/error-middleware";
+import { tenantMiddleware } from "../middlewares/extractTenantName";
+import errorMiddleware from "../middlewares/error-middleware";
 // import orders from './orders'
 
 
