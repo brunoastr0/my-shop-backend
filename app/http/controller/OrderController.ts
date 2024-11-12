@@ -3,12 +3,12 @@ import { orderService } from "../services/OrderService";
 
 class OrderController {
     async create(req: Request, res: Response, next: NextFunction) {
-        const { client_id, total_amount } = req.body.data;
+        const { client_id, due_date, items } = req.body.data;
         const tenantPrisma = req.tenantPrisma;
         const tenantId = req.tenantId
 
         try {
-            const order = await orderService.createOrder(client_id, total_amount, tenantPrisma, tenantId);
+            const order = await orderService.createOrder(client_id, due_date, items, tenantPrisma, tenantId);
             return res.status(201).json(order);
         } catch (error) {
             next(error);
