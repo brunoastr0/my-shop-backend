@@ -60,7 +60,11 @@ class OrderService {
     async listOrders(tenantPrisma: PrismaClient): Promise<Order[]> {
         if (!tenantPrisma) throw new MissingTenantError();
 
-        return await tenantPrisma.order.findMany();
+        return await tenantPrisma.order.findMany({
+            include: {
+                items: true,
+            },
+        });
     }
 
     async getOrderById(id: string, tenantPrisma: PrismaClient): Promise<Order | null> {
@@ -68,6 +72,9 @@ class OrderService {
 
         return await tenantPrisma.order.findUnique({
             where: { id },
+            include: {
+                items: true,
+            }
         });
     }
 
