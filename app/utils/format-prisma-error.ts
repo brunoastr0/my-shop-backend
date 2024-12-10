@@ -6,7 +6,7 @@ interface ErrorResponse {
     message: string;
 }
 
-function formatPrismaError(err: unknown): ErrorResponse {
+function formatPrismaError(err: ErrorResponse): ErrorResponse {
     if (err instanceof Prisma.PrismaClientKnownRequestError) {
         // Handle Prisma known errors, such as unique constraint violations
         if (err.code === 'P2002') {
@@ -52,7 +52,7 @@ function formatPrismaError(err: unknown): ErrorResponse {
 
     // Handle unknown errors
     return {
-        statusCode: 500,
+        statusCode: err?.statusCode || 500,
         errorType: 'UnknownError',
         message: (err instanceof Error) ? err.message : 'An unknown error occurred',
     };

@@ -3,6 +3,8 @@ import express, { Request, Response } from "express";
 const router = express.Router();
 import { authenticateToken } from '../middlewares/auth'
 import user from './user'
+import auth from './auth'
+
 import products from './products'
 import clients from './clients'
 import orders from './orders'
@@ -24,9 +26,10 @@ import errorMiddleware from "../middlewares/error-middleware";
 router.use(admin)
 router.use(tenantMiddleware)
 
-router.use(user)
-//
+router.use(auth)
+
 router.use(authenticateToken)
+router.use(user)
 router.use(products)
 router.use(clients)
 router.use(orders)

@@ -65,6 +65,17 @@ class ClientController {
             next(error);
         }
     }
+
+    async getClientOrders(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { id } = req.params;
+            const tenantPrisma = req.tenantPrisma
+            const clientOrders = await clientService.getClientOrders(id, tenantPrisma)
+            return res.status(200).json(clientOrders)
+        } catch (error) {
+            next(error)
+        }
+    }
 }
 
 export const clientController = new ClientController();

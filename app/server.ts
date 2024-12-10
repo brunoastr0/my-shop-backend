@@ -15,13 +15,12 @@ const prisma = new PrismaClient();
 // app.use(pgMiddleware);
 
 app.use(cors<Request>({
-  origin: process.env.CLIENT_URL,
+  origin: true,
   credentials: true
 }));
 app.use(express.json());
 app.use(cookieParser())
 app.use(urlencoded({ extended: true }))
-
 
 
 

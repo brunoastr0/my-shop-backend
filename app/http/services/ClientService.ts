@@ -1,4 +1,4 @@
-import { PrismaClient, Client } from '@prisma/client';
+import { PrismaClient, Client, Order } from '@prisma/client';
 import { MissingTenantError } from '../../utils/error-handler';
 
 class ClientService {
@@ -47,6 +47,16 @@ class ClientService {
         await tenantPrisma.client.delete({
             where: { id },
         });
+    }
+
+    async getClientOrders(client_id: string, tenantPrisma: PrismaClient): Promise<Order[] | null> {
+        if (!tenantPrisma) throw new MissingTenantError();
+        return await tenantPrisma.order.findMany({
+            where: {
+                client_id
+            },
+            include: { items: true }
+        })
     }
 }
 

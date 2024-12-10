@@ -62,7 +62,12 @@ class OrderService {
 
         return await tenantPrisma.order.findMany({
             include: {
-                items: true,
+                items: {
+                    include: {
+                        product: true
+                    }
+                },
+                client: true
             },
         });
     }

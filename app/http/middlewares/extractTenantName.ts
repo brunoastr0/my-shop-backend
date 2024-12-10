@@ -13,7 +13,7 @@ import { MissingTenantError, TenantNotFoundError } from "../../utils/error-handl
 
 export const tenantMiddleware = async (req: Request, res: Response, next: NextFunction) => {
 
-
+    console.log(req.headers)
 
     const storeName = req.headers["x-tenant-name"] as string;
     if (!storeName) {

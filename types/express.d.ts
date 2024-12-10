@@ -1,6 +1,6 @@
 
 import { Prisma } from '@prisma/client'; // Adjust the import based on where your User model is defined
-import { JwtPayload } from "jsonwebtoken";
+import { JwtPayload, Secret } from "jsonwebtoken";
 
 declare global {
     namespace Express {
@@ -13,6 +13,10 @@ declare global {
             user?: string | CustomJwtPayload | any; // Extend with user property
             tenantPrisma: Prisma;
             tenantId: string;
+        }
+        interface ProcessEnv {
+            ACCESS_TOKEN_SECRET: string | Secret;
+            REFRESH_TOKEN_SECRET: string | Secret;
         }
     }
 }
