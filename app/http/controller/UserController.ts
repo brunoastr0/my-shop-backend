@@ -17,6 +17,19 @@ class UserController {
         }
     }
 
+    async logout(req: Request, res: Response, next: NextFunction) {
+        const tenantPrisma = req.tenantPrisma;
+
+        try {
+            const { authorization } = req.headers
+
+            await userService.logout(tenantPrisma, authorization);
+            return res.status(200).json({});
+        } catch (error: any) {
+            next(error);
+        }
+    }
+
 
 }
 

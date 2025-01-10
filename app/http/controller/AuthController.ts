@@ -2,17 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { authService } from "../services/AuthService"; // Adjust the import according to your file structure
 
 class AuthController {
-    // Create a new user
-    async createUser(req: Request, res: Response) {
 
-        // const { email, password } = req.body.data;
-        // try {
-        //     const user = await userService.createUser(email, password);
-        //     return res.status(201).json({ user });
-        // } catch (error: any) {
-        //     return res.status(400).json({ message: error.message });
-        // }
-    }
 
     // User login
     async login(req: Request, res: Response, next: NextFunction) {
@@ -27,6 +17,9 @@ class AuthController {
             next(error);
         }
     }
+
+
+
 
     async refreshToken(req: Request, res: Response, next: NextFunction) {
         const { refreshToken } = req.body;

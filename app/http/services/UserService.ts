@@ -21,6 +21,10 @@ interface User {
 }
 
 class UserService {
+    ACCESS_TOKEN_SECRET: any;
+    constructor() {
+        this.ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET
+    }
 
     async currentUser(tenantPrisma: PrismaClient, authorization: any): Promise<any> {
         if (!tenantPrisma) {
@@ -29,10 +33,8 @@ class UserService {
         if (!authorization) {
             throw new Error("accessToken not provided");
         }
-        const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET
         authorization = authorization.split(" ")[1]
-        // @ts-ignore
-        const decoded = jwt.verify(authorization, accessTokenSecret) as { user: any };
+        const decoded = jwt.verify(authorization, this.ACCESS_TOKEN_SECRET) as { user: any };
         const user = await tenantPrisma.user.findUnique({
             // @ts-ignore
             where: { id: decoded.id },
@@ -43,7 +45,23 @@ class UserService {
 
     }
 
-    // Additional methods like updateUser, deleteUser, etc. can be added here
+    async logout(tenantPrisma: PrismaClient, authorization: any): Promise<any> {
+        if (!tenantPrisma) {
+            throw new Error("Tenant invalid")
+        }
+        if (!authorization) {
+            throw new Error("accessToken not provided");
+        }
+        authorization = authorization.split(" ")[1]
+        const decoded = jwt.verify(authorization, this.ACCESS_TOKEN_SECRET) as { user: any };
+        await tenantPrisma.user.update({
+            // @ts-ignore
+            where: { id: decoded.id },
+            data: { refreshToken: null }
+        })
+        return;
+    }
+
 }
 
 // Export an instance of UserService
