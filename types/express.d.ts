@@ -19,6 +19,11 @@ declare global {
             REFRESH_TOKEN_SECRET: string | Secret;
         }
     }
+    declare module "express-serve-static-core" {
+        interface Request {
+            rawBody?: string;
+        }
+    }
 }
 
 

@@ -1,8 +1,7 @@
-
 services:
   postgres:
     image: postgres
-    container_name: postgres-docker
+    container_name: my-shop-postgres
     restart: always
     env_file:
       - .env
@@ -10,15 +9,16 @@ services:
       POSTGRES_DB: ${DB_DATABASE}
       POSTGRES_USER: ${DB_ADMIN_USERNAME}
       POSTGRES_PASSWORD: ${DB_ADMIN_PASSWORD}
-      
+
       PGDATA: /data/postgres
     healthcheck:
-        test: ["CMD-SHELL","pg_isready -d ${DB_DATABASE} -U ${DB_ADMIN_USERNAME}"]
-        interval: 5s
-        timeout: 5s
-        retries: 5
+      test:
+        ["CMD-SHELL", "pg_isready -d ${DB_DATABASE} -U ${DB_ADMIN_USERNAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     ports:
-        - "5432:5432"
+      - "54322:5432"
 
     # volumes:
     #   - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
@@ -28,31 +28,32 @@ services:
   # Migration Service (uses admin user)
   migration:
     image: nodejs
+    env_file:
+      - ./.env
     build:
       context: .
       dockerfile: ./dockerfiles/Dockerfile
     environment:
-      DATABASE_URL: postgresql://postgres:postgrespassword@172.24.0.1:5432/my-shop
+      DATABASE_URL: ${DATABASE_URL}
     depends_on:
       - postgres
     command: ["npx", "prisma", "migrate", "deploy"]
     restart: "on-failure"
 
-
   nodejs:
     image: nodejs
-    container_name: nodejs
-    build: 
+    container_name: my-shop-nodejs
+    build:
       context: .
       dockerfile: ./dockerfiles/Dockerfile
-    
+
     env_file:
       - ./.env
     volumes:
       - .:/app
     ports:
-      - "80:3000"
-    restart: unless-stopped  
+      - "8080:3000"
+    restart: unless-stopped
     environment:
       - DATABASE_URL=${DATABASE_URL_USER}
 
@@ -61,13 +62,12 @@ services:
         condition: service_started
     networks:
       - node-network
-    
 
 networks:
   node-network:
-      driver: bridge
+    driver: bridge
 
 volumes:
-    postgres-data:
-      driver: local
-    node_modules:
+  postgres-data:
+    driver: local
+  node_modules:
