@@ -5,6 +5,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser"
 
 import crypto from "crypto";
+import logger from "./utils/logger";
 
 // import orders from "../routes/orders"
 
@@ -23,6 +24,9 @@ app.use(cors<Request>({
   origin: true,
   credentials: true
 }));
+app.use((req, res, next) => {
+  logger.info(`[${req.method}] ${req.url}`)
+})
 // app.use(express.json());
 app.use(cookieParser())
 app.use(urlencoded({ extended: true }))
@@ -32,7 +36,8 @@ app.use(urlencoded({ extended: true }))
 app.use('/api', routes)
 const start = async () => {
   app.listen(process.env.PORT, () => {
-    console.log(`Server is running at http://localhost:${process.env.PORT}`);
+    logger.info(`Server is running at http://${process.env.HOST}:${process.env.PORT}`);
+
   });
 };
 

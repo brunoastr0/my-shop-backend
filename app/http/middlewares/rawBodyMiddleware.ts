@@ -8,6 +8,7 @@ export function rawBodyMiddleware(req: Request, res: Response, next: NextFunctio
         data += chunk;
     });
     req.on("end", () => {
+        //@ts-ignore
         req.rawBody = data; // Attach the raw body to the request object
         next();
     });
